@@ -1,0 +1,19 @@
+{
+  "name": "handoff-save",
+  "version": "0.1.0",
+  "description": "Save the current session state to a structured handoff document before running compact, so the next session can resume without losing key context.",
+  "author": {
+    "name": "Leo"
+  },
+  "homepage": "https://github.com/iTofu/handoff-skills",
+  "repository": "https://github.com/iTofu/handoff-skills",
+  "license": "Apache-2.0",
+  "keywords": [
+    "handoff",
+    "compact",
+    "session-state",
+    "agent-skills",
+    "claude-code"
+  ],
+  "skills": "./skills/"
+}

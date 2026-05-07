@@ -1,0 +1,20 @@
+{
+  "name": "handoff-resume",
+  "version": "0.1.0",
+  "description": "Load a saved handoff and run a one-time entry checkpoint (summarize → list options → wait for explicit user direction) before any state-changing action.",
+  "author": {
+    "name": "Leo"
+  },
+  "homepage": "https://github.com/iTofu/handoff-skills",
+  "repository": "https://github.com/iTofu/handoff-skills",
+  "license": "Apache-2.0",
+  "keywords": [
+    "handoff",
+    "compact",
+    "resume",
+    "session-state",
+    "agent-skills",
+    "claude-code"
+  ],
+  "skills": "./skills/"
+}
