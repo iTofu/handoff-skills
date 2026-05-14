@@ -15,7 +15,7 @@ description: Use when user requests a handoff document before /compact, asks to 
 
 文件路径：`<worktree-root>/.handoff/<branch-slug>--<topic-slug>--<YYYYMMDD-HHMMSS>.md`
 
-- `<worktree-root>` —— `git rev-parse --show-toplevel`，不在 git 仓库时回退到当前工作目录
+- `<worktree-root>` —— `git rev-parse --show-toplevel`，**没用 `git worktree` 的话就是仓库根目录，无需额外配置**。不在 git 仓库时回退到当前工作目录
 - `<branch-slug>` —— `git branch --show-current`，把 `/` 和空白字符替换为 `-`
 - `<topic-slug>` —— 由当前任务概要生成的 2-4 个英文 kebab-case 单词（如 `jwt-refactor`、`pr-review-fix`）
 - 分隔符必须是**双横线** `--`，避免 branch 或 topic 内部的单 `-` 破坏解析
@@ -89,7 +89,7 @@ git check-ignore -q .handoff/ 2>/dev/null && echo IGNORED || echo NOT_IGNORED
 ## 9. 环境快照
 - **Git branch**: <branch>
 - **Git status**: <未提交改动数 + 大致内容>
-- **Worktrees**（`git worktree list`）: 全部列出，标注哪个是当前
+- **Worktrees**（`git worktree list`）: 多个时全部列出并标注当前；只有一个（默认情况，未用 `git worktree add`）写"仅当前一个"即可
 - **后台进程**: 启动了哪些（dev server、watcher 等）
 - **已加载外部资源**: 重要的 URL、已 fetch 的文档、已读的 MCP 资源
 - **当前 TodoList**: 复制 TodoWrite 当前的全部条目
@@ -110,11 +110,37 @@ git check-ignore -q .handoff/ 2>/dev/null && echo IGNORED || echo NOT_IGNORED
 ## 收尾输出
 
 写完文件后，向用户输出：
+
 1. 已保存的文件路径，**必须使用 Markdown 链接格式** `[<文件名>](<绝对路径>)`，让 Claude Code UI 把它渲染成可点击链接——裸文本路径不可点击
    - 链接文本用文件名即可（例如 `feature-auth--jwt-refactor--20260507-153022.md`）
    - 链接 URL 必须是完整绝对路径（开头 `/`）
-2. `.gitignore` 是否覆盖了 `.handoff/`（未覆盖时附带询问是否添加）
-3. 收尾提示：`保存完成。你可以现在运行 /compact，之后用 /handoff-resume 恢复。`
+
+2. **`.gitignore` 提示——只在 `NOT_IGNORED` 时输出**，具体提示文字见上文 ".gitignore 检查" 段的 `NOT_IGNORED` 模板。`IGNORED` 时**保持静默，不要输出任何 gitignore 相关字句**（"已被 .gitignore 覆盖" / "无需额外处理" 这种确认句也不要写）。
+
+3. **恢复指令建议**——给出可直接复制粘贴的 resume 命令，文件名用刚写的那个：
+
+   先判断 skill 安装形态（用 `test -d` 一条链路查，避免多次 stat 和 stdout 污染）：
+
+   ```bash
+   if test -d ~/.claude/plugins/cache/handoff-skills/handoff-resume; then echo PLUGIN; elif test -d ~/.claude/skills/handoff-resume; then echo SKILL_DIRECT; else echo UNKNOWN; fi
+   ```
+
+   - `PLUGIN`（plugin marketplace 装的）→ 输出：
+     ```
+     恢复时运行：/handoff-resume:handoff-resume <文件名>
+     ```
+   - `SKILL_DIRECT`（直接装到 `~/.claude/skills/`，例如 `npx skills` 装的）→ 没有 slash 命令，用自然语言触发：
+     ```
+     恢复时对 agent 说："从 handoff 恢复 <文件名>"（或 "/handoff-resume <文件名>" 也行，如果你手动加了同名 command file）
+     ```
+   - `UNKNOWN`（两个都没有 / 没装 resume skill）→ 两条都列出：
+     ```
+     恢复时（取决于安装方式）：
+     - plugin marketplace 装：/handoff-resume:handoff-resume <文件名>
+     - ~/.claude/skills/ 直装：对 agent 说"从 handoff 恢复 <文件名>"
+     ```
+
+4. 收尾提示：`保存完成。你可以现在运行 /compact，之后用上面的命令恢复。`
 
 ## 不适用场景
 

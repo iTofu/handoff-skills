@@ -75,8 +75,8 @@ You can also resume in a fresh session — there is no requirement that resume h
 <worktree-root>/.handoff/<branch-slug>--<topic-slug>--<YYYYMMDD-HHMMSS>.md
 ```
 
-- `<worktree-root>` comes from `git rev-parse --show-toplevel`
-- Each git worktree gets its own `.handoff/` directory — parallel work in multiple worktrees is naturally isolated
+- `<worktree-root>` comes from `git rev-parse --show-toplevel` — **if you don't use `git worktree`, this is just your repo's top-level directory. Nothing extra to set up; working directly on `main` or any branch works as-is**
+- If you do use `git worktree`, each worktree gets its own `.handoff/` directory — parallel work across worktrees is naturally isolated
 - The `--` (double dash) is a separator chosen so that single dashes inside branch names (like `feat-auth`) do not break parsing
 - This repo's own `.gitignore` already excludes `.handoff/`; the save skill checks your project's `.gitignore` and prompts you to add it if missing
 

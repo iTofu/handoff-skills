@@ -15,7 +15,7 @@ description: Use when user wants to resume work from a previously saved handoff 
 
 ### 不带参数
 
-1. 找到当前 worktree 根：`git rev-parse --show-toplevel`，不在 git 仓库时回退到当前工作目录
+1. 找到当前 worktree 根：`git rev-parse --show-toplevel`（没用 `git worktree` 的话就是仓库根目录，无需额外配置）；不在 git 仓库时回退到当前工作目录
 2. 找到当前 branch：`git branch --show-current`
 3. 列出 `.handoff/<branch-slug>--*.md`（按当前 branch 过滤）
 4. 按文件名中的时间戳倒序排列
@@ -28,9 +28,14 @@ description: Use when user wants to resume work from a previously saved handoff 
 
 ### 带参数
 
-- 参数是绝对路径 → 向用户确认后加载
-- 参数是 `.handoff/` 内的文件名 → 向用户确认后加载
-- 参数是关键词 → 在当前 worktree 的 `.handoff/*.md` 全集（不限 branch）中模糊匹配，列出匹配项请用户选择
+- 参数是绝对路径 → **直接加载**，不要再问"是这个吗？"。用户传了路径就是答复了"选哪个"
+- 参数是 `.handoff/` 内的文件名（或相对路径如 `.handoff/xxx.md`）→ **直接加载**，同上
+- 参数是关键词 → 在当前 worktree 的 `.handoff/*.md` 全集（**不限 branch**）中模糊匹配：
+  - 恰好 1 个文件匹配 → **直接加载**
+  - 多个匹配 → 列出匹配项请用户选择
+  - 0 个匹配 → 告知用户并停止
+
+**关键**：本 skill 有两道独立的门——**文件选择门**（确认要加载哪个文件）和**确认门规则**（读完文件后 3-5 句复述 + 选项列表 + 等待方向）。带参数场景下文件选择已被参数回答，**跳过文件选择门，但仍走确认门规则**。两道门仅在"无参数 + 单匹配"流程里合并显示。
 
 **跨 worktree**：不要主动搜索其他 worktree。如果用户需要从别的 worktree 恢复，必须自己传绝对路径。
 
@@ -38,7 +43,7 @@ description: Use when user wants to resume work from a previously saved handoff 
 
 这是本 skill 最重要的部分。**用户明确批准方向之前，禁止执行任何修改动作。**
 
-用户确认要加载哪个文件之后，读取文件，然后**在调用任何 Edit / Write / NotebookEdit / 写入型 Bash 命令之前**：
+确定要加载的文件后（用户确认 / 显式参数 / 唯一匹配 都算确定），读取文件，然后**在调用任何 Edit / Write / NotebookEdit / 写入型 Bash 命令之前**：
 
 1. 用 3-5 句话向用户复述你的理解，覆盖：
    - 当时在做什么（任务目标）
@@ -68,7 +73,8 @@ description: Use when user wants to resume work from a previously saved handoff 
 
 | 错误 | 修正 |
 |---|---|
-| 只匹配到 1 个文件就自动加载 | 即使只有 1 个，也要先把文件名给用户看并询问 |
+| 不带参数、只匹配到 1 个文件就自动加载 | 即使只有 1 个，也要先把文件名给用户看并询问 |
+| 用户已显式传路径还做二次"是这个吗"确认 | 显式参数就是答复"选哪个"，直接加载并进入确认门 |
 | 跳过 3-5 句的复述 | 复述是用户在你动手前发现误解的最后一道防线 |
 | 把第 7 节当成执行队列 | 那是讨论用的选项清单，不是 to-do |
 | 后续每次写操作都加确认 | 确认门只在恢复入口生效，之后按用户平时的设置走 |

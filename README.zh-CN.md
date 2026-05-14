@@ -75,8 +75,8 @@ ln -s "$PWD/handoff-skills/handoff-resume" ~/.claude/skills/handoff-resume
 <worktree-root>/.handoff/<branch-slug>--<topic-slug>--<YYYYMMDD-HHMMSS>.md
 ```
 
-- `<worktree-root>` 由 `git rev-parse --show-toplevel` 得出
-- 每个 git worktree 各有自己的 `.handoff/` 目录——多 worktree 并行开发天然隔离
+- `<worktree-root>` 由 `git rev-parse --show-toplevel` 得出——**如果你没用 `git worktree`，这就是你的仓库根目录。不需要额外配置，直接在 `main` 或任意 branch 上工作即可**
+- 若用了 `git worktree`，每个 worktree 各自有自己的 `.handoff/`——多 worktree 并行天然隔离
 - `--`（双横线）作为分隔符，避免 `feat-auth` 这种带单 `-` 的 branch 把解析弄乱
 - 本仓库自身的 `.gitignore` 已经忽略了 `.handoff/`；save skill 也会检查你**项目**的 `.gitignore`，没忽略时会询问是否添加
 
