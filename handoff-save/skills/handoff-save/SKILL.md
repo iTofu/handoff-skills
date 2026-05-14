@@ -125,19 +125,34 @@ git check-ignore -q .handoff/ 2>/dev/null && echo IGNORED || echo NOT_IGNORED
    if test -d ~/.claude/plugins/cache/handoff-skills/handoff-resume; then echo PLUGIN; elif test -d ~/.claude/skills/handoff-resume; then echo SKILL_DIRECT; else echo UNKNOWN; fi
    ```
 
+   **格式要求**：命令必须**单独占一行**，跟前缀 "恢复时运行：" 分开。前缀末尾加冒号 + 换行，命令独立成行——这样窄终端不会折行错位，用户也能整行选中复制。
+
    - `PLUGIN`（plugin marketplace 装的）→ 输出：
+
      ```
-     恢复时运行：/handoff-resume:handoff-resume <文件名>
+     恢复时运行：
+     /handoff-resume:handoff-resume <文件名>
      ```
+
    - `SKILL_DIRECT`（直接装到 `~/.claude/skills/`，例如 `npx skills` 装的）→ 没有 slash 命令，用自然语言触发：
+
      ```
-     恢复时对 agent 说："从 handoff 恢复 <文件名>"（或 "/handoff-resume <文件名>" 也行，如果你手动加了同名 command file）
+     恢复时对 agent 说：
+     从 handoff 恢复 <文件名>
+
+     （或 "/handoff-resume <文件名>" 也行，如果你手动加了同名 command file）
      ```
+
    - `UNKNOWN`（两个都没有 / 没装 resume skill）→ 两条都列出：
+
      ```
      恢复时（取决于安装方式）：
-     - plugin marketplace 装：/handoff-resume:handoff-resume <文件名>
-     - ~/.claude/skills/ 直装：对 agent 说"从 handoff 恢复 <文件名>"
+
+     plugin marketplace 装：
+     /handoff-resume:handoff-resume <文件名>
+
+     ~/.claude/skills/ 直装，对 agent 说：
+     从 handoff 恢复 <文件名>
      ```
 
 4. 收尾提示：`保存完成。你可以现在运行 /compact，之后用上面的命令恢复。`
