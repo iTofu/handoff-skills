@@ -1,6 +1,6 @@
 {
   "name": "handoff-save",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Save the current session state to a structured handoff document before running compact, so the next session can resume without losing key context.",
   "author": {
     "name": "Leo"

@@ -93,6 +93,11 @@ git check-ignore -q .handoff/ 2>/dev/null && echo IGNORED || echo NOT_IGNORED
 - **后台进程**: 启动了哪些（dev server、watcher 等）
 - **已加载外部资源**: 重要的 URL、已 fetch 的文档、已读的 MCP 资源
 - **当前 TodoList**: 复制 TodoWrite 当前的全部条目
+- **持久授权**（进行中流程的落盘授权凭证，供 resume 端双源核验；没有就写（无））:
+  - 流程: <哪个 skill 的哪个流程，例：pr-review-loop PR #14 评审循环自动挡>
+  - 凭证: <文件绝对路径> 中 <字段> == <期望值>（例：`<WT>/.pr-review-loop/pr-14.json` 中 `mode` == `auto`）
+  - 重入方式: <一句话，例：重跑 /pr-review-loop 续跑该 PR>
+  - 授权范围: <该授权覆盖的动作边界>
 
 ## 10. 隐含假设 与 用户偏好/约束
 - **隐含假设**（resume 时应验证）: ...
@@ -106,6 +111,7 @@ git check-ignore -q .handoff/ 2>/dev/null && echo IGNORED || echo NOT_IGNORED
 3. **优先具体而非概括** —— 写文件路径而不是"那个 auth 模块"，写行号而不是"大概在顶部"。
 4. **保留关键工具输出原文** —— 影响过决策的测试失败、错误信息、文档片段，相关时整段贴入。
 5. **不要省略章节** —— 空就写 `（无）`。
+6. **持久授权只认落盘凭证** —— 第 9 节该字段只能记录此刻真实存在的机器可读文件（路径 + 字段 + 期望值），且须由流程自身的 opt-in 契约写入。用户在对话里说过"行、继续"不算——那是会话级授权，随会话结束失效，resume 端会重新问。给不出路径就写 `（无）`。
 
 ## 收尾输出
 

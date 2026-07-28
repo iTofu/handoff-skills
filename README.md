@@ -94,6 +94,8 @@ After your reply, the agent returns to **normal behavior**. The gate is a one-ti
 
 This matters because saved handoffs are easy to over-trust. A handoff might say "user already approved option A" — but that approval came from a previous conversation. The gate forces a fresh, in-this-conversation confirmation before any mutation.
 
+The one exception is **durable authorization (two-source verification)**: if section 9 of the handoff records an on-disk authorization credential for an in-progress flow (file path + field + expected value), and the resuming agent actually reads that file and the value still matches, then the user's direction for that flow was durably approved — the agent still summarizes, then announces in one line and continues that flow instead of waiting. Both sources are required: no record in the handoff means no authorization (the agent may not dig up a state file on its own), and a mismatch on disk means no authorization either (covers mode switched back to manual, flow already finished, etc.). A verbal "go ahead" from the previous conversation never qualifies — that approval dies with the session, which is exactly the rule above.
+
 ## What a handoff document contains
 
 The save skill fills a 10-section template:

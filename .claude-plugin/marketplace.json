@@ -5,14 +5,14 @@
   },
   "metadata": {
     "description": "Skills for the handoff → compact → resume workflow. Preserve key session context across compactions, with a confirmation gate on resume.",
-    "version": "0.1.0"
+    "version": "0.2.0"
   },
   "plugins": [
     {
       "name": "handoff-save",
       "source": "./handoff-save",
       "description": "Save the current session state to a structured handoff document before running compact, so the next session can resume without losing key context.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": {
         "name": "Leo"
       },
@@ -30,8 +30,8 @@
     {
       "name": "handoff-resume",
       "source": "./handoff-resume",
-      "description": "Load a saved handoff and run a one-time entry checkpoint (summarize → list options → wait for explicit user direction) before any state-changing action.",
-      "version": "0.1.0",
+      "description": "Load a saved handoff and run a one-time entry checkpoint (summarize → list options → wait for explicit user direction, or verify a durable on-disk authorization) before any state-changing action.",
+      "version": "0.2.0",
       "author": {
         "name": "Leo"
       },
